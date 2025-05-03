@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript</title>
+  <link href="https://fonts.googleapis.com/css2?family=Monotype+Corsiva&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Monotype Corsiva', cursive;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      color: #ffffff;
+    }
+
+    header {
+      background-color: rgba(28, 28, 28, 0.9);
+      padding: 20px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      text-align: center;
+    }
+
+    header nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    header nav ul li a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.5em;
+      transition: color 0.3s ease;
+    }
+
+    header nav ul li a:hover {
+      color: #d4af37;
+    }
+
+    .content {
+      margin: 120px 20px 40px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .text {
+      flex: 1 1 400px;
+      padding: 20px;
+    }
+
+    .text h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      color: #d4af37;
+    }
+
+    .text p {
+      font-size: 1.4em;
+      line-height: 1.6;
+    }
+
+    .image {
+      flex: 1 1 300px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .image img {
+      max-width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    blockquote {
+      text-align: center;
+      font-size: 1.5em;
+      color: #ffd700;
+      margin-top: 40px;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+      }
+
+      .text, .image {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="services.html">Мої роботи</a></li>  
+        <li><a href="contact.html">Контакти</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="about">
+    <div class="content">
+      <div class="text">
+        <h1>JavaScript </h1>
+        <p>
+          Привіт!<br>Я — Еміль Торосян, 16-річний розробник та творець, який прагне розвиватися в світі технологій. 
+          Мій сайт — це відображення моїх інтересів та проєктів. Я займаюся програмуванням, веб-дизайном, 
+          а також створенням 3D-моделей та анімацій. Моя мета — не лише вдосконалювати свої навички, але й 
+          ділитися досвідом з іншими, допомагаючи знайти нові можливості для розвитку.
+          <br><br>
+          Додатково, я активно працюю над створенням проєктів у таких напрямках, як cybersecurity та розробка ПЗ.
+          Завжди готовий до нових викликів і прагну вдосконалювати свої ідеї.
+        </p>
+      </div>
+      <div class="image">
+        <img src="c:\Users\Emil\Downloads\53.jpg" >
+      </div>
+    </div>
+    <blockquote>“Ніколи не зупиняйся, поки не стане гарно .”</blockquote>
+  </section>
+</body>
+</html>

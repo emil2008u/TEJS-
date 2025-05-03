@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Рух по Трикутнику з Анімаціями та Зміною Кольору</title>
+  <style>
+    /* Загальні стилі для всього документа */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(45deg, #ff6347, #6a5acd);
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+      animation: rotateBackground 10s infinite linear;
+    }
+
+    /* Стилі для контейнера трикутника */
+    .triangle-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      transform: rotate(30deg);
+    }
+
+    /* Стилі для трикутника */
+    .triangle-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-bottom: 259.8px solid #fff;
+    }
+
+    /* Стилі для точки */
+    .dot {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: #ff6347; /* Початковий колір */
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(255, 99, 71, 0.7), 0 0 25px rgba(255, 99, 71, 0.5);
+      transform-origin: center;
+      animation: bounce 0.5s infinite alternate;
+      transition: background-color 0.3s ease; /* Додаємо плавний перехід для зміни кольору */
+    }
+
+    /* Анімація підскоку точки */
+    @keyframes bounce {
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+      100% {
+        transform: scale(1.3) rotate(360deg);
+      }
+    }
+
+    /* Стилі для сліду точки */
+    .trail {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: rgba(255, 99, 71, 0.6);
+      border-radius: 50%;
+      animation: trailAnimation 0.5s forwards;
+    }
+
+    /* Анімація сліду точки */
+    @keyframes trailAnimation {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0);
+      }
+    }
+
+    /* Анімація для фону */
+    @keyframes rotateBackground {
+      0% {
+        background: linear-gradient(45deg, #ff6347, #f0db4f);
+      }
+      50% {
+        background: linear-gradient(45deg, #f0db4f, #6a5acd);
+      }
+      100% {
+        background: linear-gradient(45deg, #6a5acd, #ff6347);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Контейнер для трикутника -->
+  <div class="triangle-container">
+    <div class="dot" id="dot"></div>
+  </div>
+
+  <script>
+    // Початковий кут для руху точки
+    let angle = 0; 
+    const dot = document.getElementById('dot'); // Отримуємо елемент точки
+    const radius = 140; // Радіус для трикутника
+    const triangle = document.querySelector('.triangle-container'); // Контейнер трикутника
+    
+    // Точки для трикутника (вершини)
+    const points = [
+      { x: 150, y: 0 }, // Вершина
+      { x: 0, y: 259.8 }, // Лівий кут
+      { x: 300, y: 259.8 } // Правий кут
+    ];
+
+    // Функція для створення сліду
+    function createTrail(x, y) {
+      const trail = document.createElement('div');
+      trail.classList.add('trail');
+      trail.style.left = `${x}px`;
+      trail.style.top = `${y}px`;
+      triangle.appendChild(trail);
+
+      // Видалення сліду після закінчення анімації
+      setTimeout(() => {
+        trail.remove();
+      }, 500);
+    }
+
+    // Функція для зміни кольору точки
+    function changeDotColor() {
+      // Визначаємо колір на основі кута
+      if (angle >= 0 && angle < 120) {
+        dot.style.backgroundColor = '#ff6347'; // Червоний
+      } else if (angle >= 120 && angle < 240) {
+        dot.style.backgroundColor = '#32cd32'; // Зелений
+      } else {
+        dot.style.backgroundColor = '#1e90ff'; // Синій
+      }
+    }
+
+    // Функція для руху точки по трикутнику
+    function moveDot() {
+      // Обчислюємо поточні координати точки, рухаючись по периметру трикутника
+      const side = Math.floor(angle / 120); // Визначаємо поточну сторону
+      const sideAngle = angle % 120; // Кут на поточній стороні
+      let x, y;
+
+      // Визначаємо координати точки на кожній стороні
+      if (side === 0) {
+        x = points[0].x + (points[1].x - points[0].x) * sideAngle / 120;
+        y = points[0].y + (points[1].y - points[0].y) * sideAngle / 120;
+      } else if (side === 1) {
+        x = points[1].x + (points[2].x - points[1].x) * (sideAngle) / 120;
+        y = points[1].y + (points[2].y - points[1].y) * (sideAngle) / 120;
+      } else {
+        x = points[2].x + (points[0].x - points[2].x) * (sideAngle) / 120;
+        y = points[2].y + (points[0].y - points[2].y) * (sideAngle) / 120;
+      }
+
+      // Оновлюємо позицію точки
+      dot.style.left = `${x}px`;
+      dot.style.top = `${y}px`;
+
+      // Створюємо слід за точкою
+      createTrail(x, y);
+
+      // Зміна кольору точки
+      changeDotColor();
+
+      // Збільшуємо кут для руху по трикутнику
+      angle += 1;
+      if (angle >= 360) {
+        angle = 0;
+      }
+    }
+
+    // Оновлюємо позицію точки кожні 10 мс
+    setInterval(moveDot, 10);
+  </script>
+</body>
+</html>
+

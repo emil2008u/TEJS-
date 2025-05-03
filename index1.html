@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Числа Фібоначчі</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #8360c3, #2ebf91);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      animation: fadeIn 1s ease;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      max-width: 250px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #2ebf91;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #25a87d;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Обчислення чисел Фібоначчі</h1>
+    <p>Скільки чисел Фібоначчі ви хочете побачити?</p>
+    <input type="number" id="count" placeholder="Наприклад, 10" min="1">
+    <br>
+    <button onclick="generateFibonacci()">Обчислити</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function generateFibonacci() {
+      const count = parseInt(document.getElementById('count').value);
+      const resultElement = document.getElementById('result');
+
+      if (!count || count < 1) {
+        resultElement.textContent = "Будь ласка, введіть число більше за 0.";
+        return;
+      }
+
+      let fibonacci = [0, 1];
+      for (let i = 2; i < count; i++) {
+        fibonacci.push(fibonacci[i - 1] + fibonacci[i - 2]);
+      }
+
+      resultElement.textContent = "Числа Фібоначчі:\n" + fibonacci.slice(0, count).join(', ');
+    }
+  </script>
+
+</body>
+</html>

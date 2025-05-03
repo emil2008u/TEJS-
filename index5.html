@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Планировщик задач</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            border: 2px solid #ddd;
+            background: linear-gradient(45deg, #f9f9f9, #fff);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            font-size: 18px;
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+        }
+
+        li.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        li button.delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        li button.delete:hover {
+            background-color: #c82333;
+        }
+
+        .task-number {
+            font-weight: bold;
+            color: #007bff;
+            margin-right: 15px;
+        }
+
+        .task-text {
+            flex-grow: 1;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Планировщик задач</h1>
+        <input type="text" id="taskInput" placeholder="Добавьте новую задачу">
+        <button id="addTaskButton">Добавить задачу</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        let taskCounter = 1;  // Счётчик задач
+
+        document.getElementById('addTaskButton').addEventListener('click', addTask);
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+
+            if (taskText) {
+                const taskList = document.getElementById('taskList');
+                const li = document.createElement('li');
+
+                li.innerHTML = `
+                    <span class="task-number">${taskCounter}</span>
+                    <span class="task-text">${taskText}</span>
+                    <button class="delete">Удалить</button>
+                `;
+                taskList.appendChild(li);
+
+                // Очистить поле ввода
+                taskInput.value = '';
+
+                // Увеличиваем счётчик для следующей задачи
+                taskCounter++;
+
+                // Обработчики для удаления задачи
+                li.querySelector('.delete').addEventListener('click', deleteTask);
+
+                // Отмечаем задачу как выполненную по клику
+                li.querySelector('.task-text').addEventListener('click', toggleCompletion);
+            }
+        }
+
+        function deleteTask(event) {
+            const li = event.target.parentElement;
+            li.remove();
+        }
+
+        function toggleCompletion(event) {
+            const li = event.target.parentElement;
+            li.classList.toggle('completed');
+        }
+    </script>
+</body>
+</html>
+

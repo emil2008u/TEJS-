@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Шахи Онлайн</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #eee;
+      margin: 0;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(8, 60px);
+      grid-template-rows: repeat(8, 60px);
+      border: 3px solid #333;
+    }
+    .cell {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    .white {
+      background-color: #f0d9b5;
+    }
+    .black {
+      background-color: #b58863;
+    }
+    .highlight {
+      outline: 3px solid yellow;
+    }
+  </style>
+</head>
+<body>
+
+<div class="board" id="board"></div>
+
+<script>
+  const board = document.getElementById("board");
+
+  const initialSetup = [
+    ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
+    ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
+    ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"]
+  ];
+
+  const piecesMoves = {
+    "♙": (r, c) => [[r-1, c]],
+    "♟": (r, c) => [[r+1, c]],
+    "♖": (r, c) => lineMoves(r, c, [[1,0], [-1,0], [0,1], [0,-1]]),
+    "♜": (r, c) => lineMoves(r, c, [[1,0], [-1,0], [0,1], [0,-1]]),
+    "♗": (r, c) => lineMoves(r, c, [[1,1], [1,-1], [-1,1], [-1,-1]]),
+    "♝": (r, c) => lineMoves(r, c, [[1,1], [1,-1], [-1,1], [-1,-1]]),
+    "♕": (r, c) => lineMoves(r, c, [[1,0], [-1,0], [0,1], [0,-1], [1,1], [1,-1], [-1,1], [-1,-1]]),
+    "♛": (r, c) => lineMoves(r, c, [[1,0], [-1,0], [0,1], [0,-1], [1,1], [1,-1], [-1,1], [-1,-1]]),
+    "♔": (r, c) => oneStep(r, c),
+    "♚": (r, c) => oneStep(r, c),
+    "♘": (r, c) => knightMoves(r, c),
+    "♞": (r, c) => knightMoves(r, c)
+  };
+
+  function lineMoves(r, c, directions) {
+    let moves = [];
+    directions.forEach(([dr, dc]) => {
+      for (let i = 1; i < 8; i++) {
+        let nr = r + dr*i, nc = c + dc*i;
+        if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+          moves.push([nr, nc]);
+          if (cells[nr][nc].firstChild) break;
+        } else break;
+      }
+    });
+    return moves;
+  }
+
+  function oneStep(r, c) {
+    return [
+      [r-1, c], [r+1, c], [r, c-1], [r, c+1],
+      [r-1, c-1], [r-1, c+1], [r+1, c-1], [r+1, c+1]
+    ].filter(([nr, nc]) => nr >= 0 && nr < 8 && nc >= 0 && nc < 8);
+  }
+
+  function knightMoves(r, c) {
+    return [
+      [r-2, c-1], [r-2, c+1], [r-1, c-2], [r-1, c+2],
+      [r+1, c-2], [r+1, c+2], [r+2, c-1], [r+2, c+1]
+    ].filter(([nr, nc]) => nr >= 0 && nr < 8 && nc >= 0 && nc < 8);
+  }
+
+  let cells = [];
+  let selectedPiece = null;
+  let selectedCell = null;
+  let currentPlayer = "white"; // білий починає
+
+  function createBoard() {
+    for (let row = 0; row < 8; row++) {
+      cells[row] = [];
+      for (let col = 0; col < 8; col++) {
+        const cell = document.createElement("div");
+        cell.className = `cell ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+
+        if (initialSetup[row][col]) {
+          const piece = document.createElement("div");
+          piece.textContent = initialSetup[row][col];
+          piece.className = "piece";
+          cell.appendChild(piece);
+        }
+
+        cell.addEventListener('click', onCellClick);
+        board.appendChild(cell);
+        cells[row][col] = cell;
+      }
+    }
+  }
+
+  function clearHighlights() {
+    cells.flat().forEach(cell => cell.classList.remove('highlight'));
+  }
+
+  function onCellClick(e) {
+    const cell = e.currentTarget;
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+    const piece = cell.firstChild;
+
+    if (selectedPiece && cell.classList.contains('highlight')) {
+      // Move the piece
+      if (cell.firstChild) {
+        cell.removeChild(cell.firstChild); // з'їдаємо
+      }
+      cell.appendChild(selectedPiece);
+      selectedCell.innerHTML = '';
+      clearHighlights();
+      selectedPiece = null;
+      selectedCell = null;
+      switchPlayer();
+    } else if (piece && isCorrectPlayer(piece.textContent)) {
+      clearHighlights();
+      selectedPiece = piece;
+      selectedCell = cell;
+      const moves = piecesMoves[piece.textContent]?.(row, col) || [];
+      moves.forEach(([r, c]) => {
+        if (!cells[r][c].firstChild || !isCorrectPlayer(cells[r][c].firstChild.textContent)) {
+          cells[r][c].classList.add('highlight');
+        }
+      });
+    } else {
+      clearHighlights();
+      selectedPiece = null;
+      selectedCell = null;
+    }
+  }
+
+  function isCorrectPlayer(piece) {
+    const whitePieces = "♔♕♖♗♘♙";
+    const blackPieces = "♚♛♜♝♞♟";
+    return (currentPlayer === "white" && whitePieces.includes(piece)) ||
+           (currentPlayer === "black" && blackPieces.includes(piece));
+  }
+
+  function switchPlayer() {
+    currentPlayer = currentPlayer === "white" ? "black" : "white";
+  }
+
+  createBoard();
+</script>
+
+</body>
+</html>
+

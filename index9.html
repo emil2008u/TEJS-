@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Клікни фігуру!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #info {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    canvas {
+      background: #fff;
+      display: block;
+      margin: 0 auto;
+      border: 5px solid #34495e;
+      border-radius: 15px;
+    }
+
+    #game-over {
+      display: none;
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #27ae60;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Гра: Клікни фігуру!</h1>
+  <div id="info">⏳ Час: <span id="time">30</span> сек | 🎯 Рахунок: <span id="score">0</span></div>
+  <canvas id="game" width="500" height="400"></canvas>
+  <div id="game-over">🕹 Гру завершено! Ваш рахунок: <span id="final-score"></span></div>
+  <button id="restart" style="display: none;">🔁 Почати знову</button>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const timeEl = document.getElementById("time");
+    const scoreEl = document.getElementById("score");
+    const gameOverEl = document.getElementById("game-over");
+    const finalScoreEl = document.getElementById("final-score");
+    const restartBtn = document.getElementById("restart");
+
+    let score = 0;
+    let timeLeft = 30;
+    let currentFigure = {};
+    let timerInterval;
+    let figureInterval;
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function drawFigure() {
+      const size = randomInt(30, 80);
+      const x = randomInt(size, canvas.width - size);
+      const y = randomInt(size, canvas.height - size);
+      const type = ["circle", "rect", "triangle"][randomInt(0, 3)];
+      const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = color;
+
+      if (type === "circle") {
+        ctx.beginPath();
+        ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (type === "rect") {
+        ctx.fillRect(x - size / 2, y - size / 2, size, size);
+      } else if (type === "triangle") {
+        ctx.beginPath();
+        ctx.moveTo(x, y - size / 2);
+        ctx.lineTo(x - size / 2, y + size / 2);
+        ctx.lineTo(x + size / 2, y + size / 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      currentFigure = { x, y, size };
+    }
+
+    function isClickedFigure(clickX, clickY) {
+      const { x, y, size } = currentFigure;
+      return clickX >= x - size && clickX <= x + size &&
+             clickY >= y - size && clickY <= y + size;
+    }
+
+    canvas.addEventListener("click", e => {
+      if (timeLeft <= 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      if (isClickedFigure(clickX, clickY)) {
+        score++;
+        scoreEl.textContent = score;
+        drawFigure();
+      }
+    });
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreEl.textContent = "0";
+      timeEl.textContent = timeLeft;
+      gameOverEl.style.display = "none";
+      restartBtn.style.display = "none";
+
+      drawFigure();
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+
+      figureInterval = setInterval(drawFigure, 1500);
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      clearInterval(figureInterval);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      finalScoreEl.textContent = score;
+      gameOverEl.style.display = "block";
+      restartBtn.style.display = "inline-block";
+    }
+
+    restartBtn.addEventListener("click", startGame);
+
+    // Запуск гри одразу
+    startGame();
+  </script>
+</body>
+</html>

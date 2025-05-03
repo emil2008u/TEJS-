@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гра: Вгадай число</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d3d3d3; /* сірий фон */
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #f0f0f0; /* світло-сіре поле для тексту */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        button {
+            background-color: #4CAF50; /* зелена кнопка */
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        .alert {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Аналіз числа</h2>
+        <p>Введіть ціле число, і ми проаналізуємо його:</p>
+        <button onclick="analyzeNumber()">Аналізувати число</button>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function analyzeNumber() {
+            let num = prompt("Введіть ціле число:").trim();
+            
+            // Перевірка, чи введене значення є цілим числом
+            if (!/^[-]?\d+$/.test(num)) {
+                alert("Помилка: введене значення не є цілим числом.");
+                return;
+            }
+            
+            let isNegative = num.startsWith('-');
+            let digits = num.replace('-', '').split('').map(Number);
+            let totalDigits = digits.length;
+            let evenCount = digits.filter(d => d % 2 === 0).length;
+            let oddCount = totalDigits - evenCount;
+            let digitsSum = digits.reduce((sum, d) => sum + d, 0);
+
+            // Визначення слів для чисел
+            const digitWords = ["нуль", "один", "два", "три", "чотири", "п’ять", "шість", "сім", "вісім", "дев’ять"];
+            let digitsInWords = digits.map(d => digitWords[d]).join(" ");
+            
+            // Додаємо слово "мінус" перед числом, якщо воно негативне
+            if (isNegative) {
+                digitsInWords = "мінус " + digitsInWords;
+            }
+            
+            // Визначаємо правильне слово "цифра"
+            let lastDigit = totalDigits % 10;
+            let lastTwoDigits = totalDigits % 100;
+            let digitWord = (lastDigit === 1 && lastTwoDigits !== 11) ? "цифра" :
+                            ([2, 3, 4].includes(lastDigit) && ![12, 13, 14].includes(lastTwoDigits)) ? "цифри" : "цифр";
+            
+            // Виведення результатів на сторінку
+            let output = 
+                <p>Кількість цифр у числі: ${totalDigits} ${digitWord}</p>
+                <p>Кількість парних цифр: ${evenCount}</p>
+                <p>Кількість непарних цифр: ${oddCount}</p>
+                <p>Цифри числа словами: ${digitsInWords}</p>
+                <p>Сума цифр: ${digitsSum}</p>
+            ;
+            document.getElementById("output").innerHTML = output;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Математична Вежа</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(#2c3e50, #34495e);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      text-align: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    #tower {
+      position: relative;
+      width: 200px;
+      height: 400px;
+      margin: 20px auto;
+      background: #7f8c8d;
+      border: 5px solid #ecf0f1;
+    }
+    #player {
+      position: absolute;
+      bottom: 0;
+      width: 50px;
+      height: 50px;
+      background: gold;
+      border-radius: 50%;
+      left: 75px;
+      transition: bottom 0.5s;
+    }
+    #question {
+      font-size: 20px;
+      margin: 20px;
+    }
+    input {
+      padding: 8px;
+      font-size: 18px;
+      width: 100px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    #win {
+      font-size: 28px;
+      color: lime;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Математична Вежа</h1>
+  <div id="tower">
+    <div id="player"></div>
+  </div>
+  <div id="question">2 + 2 = ?</div>
+  <input type="number" id="answer">
+  <button onclick="checkAnswer()">Відповісти</button>
+  <div id="win"></div>
+
+  <script>
+    const questions = [
+      { q: "2 + 2 = ?", a: 4 },
+      { q: "5 * 3 = ?", a: 15 },
+      { q: "10 - 7 = ?", a: 3 },
+      { q: "6 * 6 = ?", a: 36 },
+      { q: "100 / 10 = ?", a: 10 },
+    ];
+    let level = 0;
+    const player = document.getElementById("player");
+    const questionEl = document.getElementById("question");
+    const answerEl = document.getElementById("answer");
+    const winEl = document.getElementById("win");
+
+    function checkAnswer() {
+      const val = parseInt(answerEl.value);
+      if (val === questions[level].a) {
+        level++;
+        answerEl.value = "";
+        if (level < questions.length) {
+          questionEl.textContent = questions[level].q;
+          player.style.bottom = (level * 70) + "px";
+        } else {
+          player.style.bottom = "350px";
+          questionEl.textContent = "";
+          winEl.textContent = "Вітаю! Ти піднявся на вершину вежі!";
+        }
+      } else {
+        alert("Неправильно! Спробуй ще.");
+      }
+    }
+  </script>
+</body>
+</html>
