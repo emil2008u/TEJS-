@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Гра: Вгадай число</title>
+    <title>Аналіз числа</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,14 +70,17 @@
 
     <script>
         function analyzeNumber() {
-            let num = prompt("Введіть ціле число:").trim();
-            
+            let num = prompt("Введіть ціле число:");
+            if (num === null) return; // якщо скасовано
+
+            num = num.trim();
+
             // Перевірка, чи введене значення є цілим числом
             if (!/^[-]?\d+$/.test(num)) {
                 alert("Помилка: введене значення не є цілим числом.");
                 return;
             }
-            
+
             let isNegative = num.startsWith('-');
             let digits = num.replace('-', '').split('').map(Number);
             let totalDigits = digits.length;
@@ -85,29 +88,25 @@
             let oddCount = totalDigits - evenCount;
             let digitsSum = digits.reduce((sum, d) => sum + d, 0);
 
-            // Визначення слів для чисел
             const digitWords = ["нуль", "один", "два", "три", "чотири", "п’ять", "шість", "сім", "вісім", "дев’ять"];
             let digitsInWords = digits.map(d => digitWords[d]).join(" ");
-            
-            // Додаємо слово "мінус" перед числом, якщо воно негативне
             if (isNegative) {
                 digitsInWords = "мінус " + digitsInWords;
             }
-            
-            // Визначаємо правильне слово "цифра"
+
+            // Визначення правильного слова для "цифра"
             let lastDigit = totalDigits % 10;
             let lastTwoDigits = totalDigits % 100;
             let digitWord = (lastDigit === 1 && lastTwoDigits !== 11) ? "цифра" :
                             ([2, 3, 4].includes(lastDigit) && ![12, 13, 14].includes(lastTwoDigits)) ? "цифри" : "цифр";
-            
-            // Виведення результатів на сторінку
-            let output = 
+
+            let output = `
                 <p>Кількість цифр у числі: ${totalDigits} ${digitWord}</p>
                 <p>Кількість парних цифр: ${evenCount}</p>
                 <p>Кількість непарних цифр: ${oddCount}</p>
                 <p>Цифри числа словами: ${digitsInWords}</p>
                 <p>Сума цифр: ${digitsSum}</p>
-            ;
+            `;
             document.getElementById("output").innerHTML = output;
         }
     </script>
