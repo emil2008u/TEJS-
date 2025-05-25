@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Об'єднана Спіраль Фібоначчі</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      background: linear-gradient(135deg, #0a0a1a, #1f1f3a);
+      font-family: 'Consolas', monospace;
+      color: #00ffe7;
+      overflow: hidden;
+    }
+
+    .panel {
+      background: #101028cc;
+      border: 2px solid #00ffe7;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00ffe7;
+      width: 400px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      animation: pulse 3s infinite alternate;
+      margin: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      text-shadow: 0 0 10px #00ffe7;
+      user-select: none;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid #00ffee;
+      background: #121233;
+      color: #00ffe7;
+      font-size: 16px;
+      text-align: center;
+      box-shadow: 0 0 10px #00ffee inset;
+    }
+
+    button {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      background: #00ffe7;
+      color: #000;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 15px #00ffe7;
+      cursor: pointer;
+      transition: 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background: #00ccbb;
+      box-shadow: 0 0 25px #00ccbb;
+    }
+
+    canvas {
+      margin-top: 20px;
+      border: 2px solid #00ffe7;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00ffe7;
+      background: #000000cc;
+      display: block;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #00ffe7; }
+      100% { box-shadow: 0 0 25px #00ffff; }
+    }
+
+    /* Контейнер для двох панелей */
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      gap: 40px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* Правая панель — логарифмічна спіраль */
+    .logarithmic-panel {
+      position: relative;
+      background: radial-gradient(circle, #000014, #000);
+      border: 2px solid #00ffcc;
+      box-shadow: 0 0 20px #00ffcc;
+      border-radius: 15px;
+      width: 600px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      color: #00ffcc;
+      font-family: monospace;
+    }
+
+    .logarithmic-panel button {
+      background: #00ffcc;
+      color: #000;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffcc;
+      border: none;
+      transition: 0.3s ease;
+      user-select: none;
+    }
+
+    .logarithmic-panel button:hover {
+      background: #00e6b8;
+      box-shadow: 0 0 20px #00e6b8;
+    }
+
+    .logarithmic-panel canvas {
+      width: 100%;
+      height: 600px;
+      border-radius: 10px;
+      background: #00000055;
+      border: 2px solid #00ffcc;
+      box-shadow: 0 0 20px #00ffcc;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Лева панель — квадрати Фібоначчі -->
+  <div class="panel">
+    <h1>🌀 Спіраль Фібоначчі (квадрати)</h1>
+    <input id="num1" type="number" placeholder="Перше число (a)" />
+    <input id="num2" type="number" placeholder="Друге число (b)" />
+    <div style="display: flex; gap: 10px;">
+      <button id="drawBtn">Побудувати</button>
+      <button id="randomBtn">🎲 Рандом</button>
+    </div>
+    <canvas id="canvas1" width="380" height="380"></canvas>
+  </div>
+
+  <!-- Права панель — логарифмічна спіраль -->
+  <div class="logarithmic-panel">
+    <h1>Справжня Спіраль Фібоначчі (логарифмічна)</h1>
+    <button id="drawLogSpiralBtn">🎲 Згенерувати Спіраль</button>
+    <canvas id="canvas2" width="600" height="600"></canvas>
+  </div>
+
+</div>
+
+<script>
+  // Квадрати Фібоначчі (ліва панель)
+  const canvas1 = document.getElementById('canvas1');
+  const ctx1 = canvas1.getContext('2d');
+  const drawBtn = document.getElementById('drawBtn');
+  const randomBtn = document.getElementById('randomBtn');
+
+  function drawSpiral(a, b) {
+    const fib = [a, b];
+    for (let i = 0; i < 12; i++) {
+      fib.push(fib[i] + fib[i + 1]);
+    }
+
+    ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+    ctx1.strokeStyle = '#00ffe7';
+    ctx1.lineWidth = 2;
+
+    let x = canvas1.width / 2;
+    let y = canvas1.height / 2;
+    let angle = 0;
+
+    for (let i = 0; i < fib.length; i++) {
+      let side = fib[i];
+
+      ctx1.strokeRect(x, y - side, side, side);
+
+      ctx1.beginPath();
+      ctx1.arc(
+        x + side * (angle === 0 ? 1 : angle === 180 ? 0 : angle === 90 ? 1 : 0),
+        y - side * (angle === 90 ? 1 : angle === 0 ? 0 : angle === 270 ? 1 : 0),
+        side,
+        (angle * Math.PI) / 180,
+        ((angle + 90) * Math.PI) / 180
+      );
+      ctx1.stroke();
+
+      switch (angle) {
+        case 0: x += side; y -= side; break;
+        case 90: x += side; y += side; break;
+        case 180: x -= side; y += side; break;
+        case 270: x -= side; y -= side; break;
+      }
+
+      angle = (angle + 90) % 360;
+    }
+  }
+
+  drawBtn.addEventListener('click', () => {
+    const a = parseInt(document.getElementById('num1').value);
+    const b = parseInt(document.getElementById('num2').value);
+    if (isNaN(a) || isNaN(b)) {
+      alert('Введи два числа!');
+      return;
+    }
+    drawSpiral(a, b);
+  });
+
+  randomBtn.addEventListener('click', () => {
+    const fib = [1, 1];
+    while (fib.length < 20) {
+      fib.push(fib[fib.length - 1] + fib[fib.length - 2]);
+    }
+
+    const index = Math.floor(Math.random() * (fib.length - 2));
+    const randomA = fib[index];
+    const randomB = fib[index + 1];
+
+    document.getElementById('num1').value = randomA;
+    document.getElementById('num2').value = randomB;
+
+    drawSpiral(randomA, randomB);
+  });
+
+  // Логарифмічна спіраль (права панель)
+  const canvas2 = document.getElementById("canvas2");
+  const ctx2 = canvas2.getContext("2d");
+  const w = canvas2.width;
+  const h = canvas2.height;
+  const drawLogSpiralBtn = document.getElementById("drawLogSpiralBtn");
+
+  function drawLogSpiral() {
+    ctx2.clearRect(0, 0, w, h);
+
+    // Випадкові коефіцієнти
+    const a = Math.random() * 5 + 2;      // масштаб
+    const b = 0.15 + Math.random() * 0.1; // швидкість розкручування
+    const turns = 6 + Math.floor(Math.random() * 4); // кількість обертів
+
+    ctx2.save();
+    ctx2.translate(w / 2, h / 2);
+    ctx2.beginPath();
+    ctx2.moveTo(0, 0);
+
+    for (let theta = 0; theta < 2 * Math.PI * turns; theta += 0.05) {
+      const r = a * Math.exp(b * theta);
+      const x = r * Math.cos(theta);
+      const y = r * Math.sin(theta);
+      ctx2.lineTo(x, y);
+    }
+
+    ctx2.strokeStyle = "#00ffcc";
+    ctx2.lineWidth = 2;
+    ctx2.stroke();
+    ctx2.restore();
+  }
+
+  drawLogSpiralBtn.addEventListener("click", drawLogSpiral);
+
+  // Автоматичне завантаження обох
+  drawSpiral(1, 1);
+  drawLogSpiral();
+
+</script>
+
+</body>
+</html>
