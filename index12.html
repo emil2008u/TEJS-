@@ -1,103 +1,171 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Столиці та Населення Всіх Країн</title>
-  <style>
-    body {
-      background-color: #0f0f0f;
-      color: #00ff00;
-      font-family: 'Courier New', monospace;
-      padding: 40px;
-      text-align: center;
-    }
-
-    .card {
-      background-color: #1a1a1a;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00ff00;
-      max-width: 500px;
-      margin: auto;
-    }
-
-    input {
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 2px solid #00ff00;
-      background-color: #000;
-      color: #00ff00;
-      width: 80%;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 12px 25px;
-      font-size: 16px;
-      background-color: #00ff00;
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background-color: #00cc00;
-    }
-
-    .result {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-
-    img {
-      margin-top: 15px;
-      border: 2px solid #00ff00;
-      border-radius: 10px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Інформація про країни</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Consolas, monospace, Courier New, monospace;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #00ffcc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  h1 {
+    margin-bottom: 1rem;
+    text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc;
+  }
+  select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    background: #002b36;
+    border: 2px solid #00ffcc;
+    color: #00ffcc;
+    border-radius: 5px;
+    width: 300px;
+    margin-bottom: 2rem;
+  }
+  #info {
+    background: rgba(0,255,204,0.1);
+    border: 1px solid #00ffcc;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    width: 320px;
+    min-height: 130px;
+    box-shadow: 0 0 10px #00ffccaa;
+    line-height: 1.4;
+  }
+</style>
 </head>
 <body>
+  <h1>Оберіть країну або територію</h1>
+  <select id="countrySelect">
+    <option value="">-- Оберіть --</option>
+  </select>
+  <div id="info">Інформація про країну з'явиться тут.</div>
 
-  <h1>🌍 Столиці та Населення Країн Світу</h1>
+<script>
+  const countries = [
+    {name: "Австралія", status: "Держава-член ООН", population: "26 млн", currency: "Австралійський долар (AUD)"},
+    {name: "Австрія", status: "Держава-член ООН", population: "9 млн", currency: "Євро (EUR)"},
+    {name: "Азербайджан", status: "Держава-член ООН", population: "10 млн", currency: "Манат (AZN)"},
+    {name: "Албанія", status: "Держава-член ООН", population: "2.8 млн", currency: "Лек (ALL)"},
+    {name: "Алжир", status: "Держава-член ООН", population: "45 млн", currency: "Динар (DZD)"},
+    {name: "Ватикан", status: "Держава-спостерігач в ООН", population: "≈800", currency: "Євро (EUR)"},
+    {name: "Палестина", status: "Держава-спостерігач в ООН", population: "5 млн", currency: "Ізраїльський новий шекель (ILS) / Йорданський динар (JOD)"},
+    {name: "Чечня", status: "Держава, визнана Україною, але окупована", population: "≈1.4 млн", currency: "Російський рубль (RUB)"},
+    {name: "Західна Сахара", status: "Визнана ООН, але окупована", population: "≈600 тис.", currency: "Марокканський дирхам (MAD)"},
+    {name: "Косово", status: "Не в ООН, офіційно визнана багатьма державами", population: "1.8 млн", currency: "Євро (EUR)"},
+    {name: "Тайвань", status: "Не в ООН, офіційно визнана багатьма державами", population: "23 млн", currency: "Новый тайваньський долар (TWD)"},
+    {name: "Кокосові Острови", status: "Залежна територія Австралії", population: "≈600", currency: "Австралійський долар (AUD)"},
+    {name: "Гренландія", status: "Залежна територія Данії", population: "56 тис.", currency: "Данська крона (DKK)"},
+    {name: "Гонконг", status: "Територія Китаю з особливим статусом", population: "7.5 млн", currency: "Гонконгський долар (HKD)"},
+    {name: "Макао", status: "Територія Китаю з особливим статусом", population: "0.6 млн", currency: "Патака (MOP)"},
+    {name: "Аландські Острови", status: "Територія Фінляндії з особливим статусом", population: "30 тис.", currency: "Євро (EUR)"},
+    
+    // Додаткові країни
+    {name: "США", status: "Держава-член ООН", population: "331 млн", currency: "Долар США (USD)"},
+    {name: "Канада", status: "Держава-член ООН", population: "38 млн", currency: "Канадський долар (CAD)"},
+    {name: "Бразилія", status: "Держава-член ООН", population: "213 млн", currency: "Бразильський реал (BRL)"},
+    {name: "Індія", status: "Держава-член ООН", population: "1.4 млрд", currency: "Індійська рупія (INR)"},
+    {name: "Китай", status: "Держава-член ООН", population: "1.4 млрд", currency: "Юань (CNY)"},
+    {name: "Японія", status: "Держава-член ООН", population: "126 млн", currency: "Японська єна (JPY)"},
+    {name: "Німеччина", status: "Держава-член ООН", population: "83 млн", currency: "Євро (EUR)"},
+    {name: "Велика Британія", status: "Держава-член ООН", population: "67 млн", currency: "Фунт стерлінгів (GBP)"},
+    {name: "Франція", status: "Держава-член ООН", population: "65 млн", currency: "Євро (EUR)"},
+    {name: "Італія", status: "Держава-член ООН", population: "60 млн", currency: "Євро (EUR)"},
+    {name: "Південна Корея", status: "Держава-член ООН", population: "52 млн", currency: "Південнокорейський вон (KRW)"},
+    {name: "Іспанія", status: "Держава-член ООН", population: "47 млн", currency: "Євро (EUR)"},
+    {name: "Мексика", status: "Держава-член ООН", population: "128 млн", currency: "Мексиканське песо (MXN)"},
+    {name: "Індонезія", status: "Держава-член ООН", population: "276 млн", currency: "Індонезійська рупія (IDR)"},
+    {name: "Нідерланди", status: "Держава-член ООН", population: "17 млн", currency: "Євро (EUR)"},
+    {name: "Туреччина", status: "Держава-член ООН", population: "85 млн", currency: "Турецька ліра (TRY)"},
+    {name: "Швейцарія", status: "Держава-член ООН", population: "8.6 млн", currency: "Швейцарський франк (CHF)"},
+    {name: "Польща", status: "Держава-член ООН", population: "38 млн", currency: "Злотий (PLN)"},
+    {name: "Аргентина", status: "Держава-член ООН", population: "45 млн", currency: "Аргентинське песо (ARS)"},
+    {name: "Португалія", status: "Держава-член ООН", population: "10 млн", currency: "Євро (EUR)"},
+    {name: "ОАЕ", status: "Держава-член ООН", population: "10 млн", currency: "Дирхам ОАЕ (AED)"},
+    {name: "Єгипет", status: "Держава-член ООН", population: "109 млн", currency: "Єгипетський фунт (EGP)"},
+    {name: "Південна Африка", status: "Держава-член ООН", population: "60 млн", currency: "Південноафриканський ранд (ZAR)"},
+    {name: "Нова Зеландія", status: "Держава-член ООН", population: "5 млн", currency: "Новозеландський долар (NZD)"},
+    {name: "Греція", status: "Держава-член ООН", population: "10.7 млн", currency: "Євро (EUR)"},
+    {name: "Швеція", status: "Держава-член ООН", population: "10.4 млн", currency: "Шведська крона (SEK)"},
+    {name: "Норвегія", status: "Держава-член ООН", population: "5.4 млн", currency: "Норвезька крона (NOK)"},
+    {name: "Ірландія", status: "Держава-член ООН", population: "5 млн", currency: "Євро (EUR)"},
+    {name: "Фінляндія", status: "Держава-член ООН", population: "5.5 млн", currency: "Євро (EUR)"},
+    {name: "Данія", status: "Держава-член ООН", population: "5.8 млн", currency: "Данська крона (DKK)"},
+    
+    // Нові 40 країн
+    {name: "Афганістан", status: "Держава-член ООН", population: "38 млн", currency: "Афгані (AFN)"},
+    {name: "Бангладеш", status: "Держава-член ООН", population: "166 млн", currency: "Такa (BDT)"},
+    {name: "Бельгія", status: "Держава-член ООН", population: "11.5 млн", currency: "Євро (EUR)"},
+    {name: "Чилі", status: "Держава-член ООН", population: "19 млн", currency: "Чилійське песо (CLP)"},
+    {name: "Колумбія", status: "Держава-член ООН", population: "51 млн", currency: "Колумбійське песо (COP)"},
+    {name: "Коста-Рика", status: "Держава-член ООН", population: "5 млн", currency: "Костариканський колон (CRC)"},
+    {name: "Куба", status: "Держава-член ООН", population: "11 млн", currency: "Кубинське песо (CUP)"},
+    {name: "Чехія", status: "Держава-член ООН", population: "10.7 млн", currency: "Чеська крона (CZK)"},
+    {name: "Естонія", status: "Держава-член ООН", population: "1.3 млн", currency: "Євро (EUR)"},
+    {name: "Філіппіни", status: "Держава-член ООН", population: "111 млн", currency: "Філіппінське песо (PHP)"},
+    {name: "Гана", status: "Держава-член ООН", population: "31 млн", currency: "Ганський седі (GHS)"},
+    {name: "Угорщина", status: "Держава-член ООН", population: "9.7 млн", currency: "Форинт (HUF)"},
+    {name: "Ісландія", status: "Держава-член ООН", population: "0.36 млн", currency: "Ісландська крона (ISK)"},
+    {name: "Іран", status: "Держава-член ООН", population: "85 млн", currency: "Іранський ріал (IRR)"},
+    {name: "Ірак", status: "Держава-член ООН", population: "40 млн", currency: "Іракський динар (IQD)"},
+    {name: "Ізраїль", status: "Держава-член ООН", population: "9 млн", currency: "Ізраїльський новий шекель (ILS)"},
+    {name: "Ямайка", status: "Держава-член ООН", population: "3 млн", currency: "Ямайський долар (JMD)"},
+    {name: "Йорданія", status: "Держава-член ООН", population: "10 млн", currency: "Йорданський динар (JOD)"},
+    {name: "Казахстан", status: "Держава-член ООН", population: "19 млн", currency: "Тенге (KZT)"},
+    {name: "Кенія", status: "Держава-член ООН", population: "54 млн", currency: "Кенійський шилінг (KES)"},
+    {name: "Кувейт", status: "Держава-член ООН", population: "4.5 млн", currency: "Кувейтський динар (KWD)"},
+    {name: "Ліван", status: "Держава-член ООН", population: "6.8 млн", currency: "Ліванський фунт (LBP)"},
+    {name: "Литва", status: "Держава-член ООН", population: "2.7 млн", currency: "Євро (EUR)"},
+    {name: "Люксембург", status: "Держава-член ООН", population: "0.63 млн", currency: "Євро (EUR)"},
+    {name: "Малайзія", status: "Держава-член ООН", population: "33 млн", currency: "Малайзійський рінггіт (MYR)"},
+    {name: "Мальта", status: "Держава-член ООН", population: "0.52 млн", currency: "Євро (EUR)"},
+    {name: "Марокко", status: "Держава-член ООН", population: "36 млн", currency: "Марокканський дирхам (MAD)"},
+    {name: "Непал", status: "Держава-член ООН", population: "30 млн", currency: "Непальська рупія (NPR)"},
+    {name: "Нігерія", status: "Держава-член ООН", population: "206 млн", currency: "Нігерійська найра (NGN)"},
+    {name: "Пакистан", status: "Держава-член ООН", population: "220 млн", currency: "Пакистанська рупія (PKR)"},
+    {name: "Панама", status: "Держава-член ООН", population: "4.3 млн", currency: "Бальбоа (PAB), Долар США (USD)"},
+    {name: "Парагвай", status: "Держава-член ООН", population: "7 млн", currency: "Парагвайський гуарані (PYG)"},
+    {name: "Перу", status: "Держава-член ООН", population: "33 млн", currency: "Перуанський новий соль (PEN)"},
+    {name: "Румунія", status: "Держава-член ООН", population: "19 млн", currency: "Лей (RON)"},
+    {name: "Сербія", status: "Держава-член ООН", population: "7 млн", currency: "Сербський динар (RSD)"},
+    {name: "Сінгапур", status: "Держава-член ООН", population: "5.7 млн", currency: "Сінгапурський долар (SGD)"},
+    {name: "Словаччина", status: "Держава-член ООН", population: "5.5 млн", currency: "Євро (EUR)"},
+    {name: "Словенія", status: "Держава-член ООН", population: "2.1 млн", currency: "Євро (EUR)"},
+    {name: "Тайланд", status: "Держава-член ООН", population: "69 млн", currency: "Таїландський бат (THB)"},
+    {name: "Туніс", status: "Держава-член ООН", population: "12 млн", currency: "Туніський динар (TND)"},
+    {name: "Україна", status: "Держава-член ООН", population: "41 млн", currency: "Гривня (UAH)"}
+  ];
 
-  <div class="card">
-    <input type="text" id="countryInput" placeholder="Введіть назву країни (будь-якою мовою)">
-    <br>
-    <button onclick="getCountryInfo()">Дізнатись</button>
-    <div class="result" id="countryResult"></div>
-  </div>
+  const select = document.getElementById('countrySelect');
+  const info = document.getElementById('info');
 
-  <script>
-    async function getCountryInfo() {
-      const countryName = document.getElementById("countryInput").value.trim();
-      const resultDiv = document.getElementById("countryResult");
+  // Заповнити селект опціями
+  countries.forEach(country => {
+    const option = document.createElement('option');
+    option.value = country.name;
+    option.textContent = country.name;
+    select.appendChild(option);
+  });
 
-      if (!countryName) {
-        resultDiv.innerText = "❗ Введіть назву країни.";
-        return;
-      }
-
-      try {
-        const response = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}?fullText=true`);
-        if (!response.ok) throw new Error("Країну не знайдено");
-
-        const data = await response.json();
-        const country = data[0];
-
-        resultDiv.innerHTML = `
-          <h2>${country.name.common}</h2>
-          <p><strong>Столиця:</strong> ${country.capital ? country.capital[0] : "Немає даних"}</p>
-          <p><strong>Населення:</strong> ${country.population.toLocaleString()} осіб</p>
-          <img src="${country.flags.svg}" alt="Прапор ${country.name.common}" width="150">
-        `;
-      } catch (error) {
-        resultDiv.innerHTML = `<p style="color: red;">❌ Країну не знайдено або сталася помилка.</p>`;
-      }
+  select.addEventListener('change', () => {
+    const selected = countries.find(c => c.name === select.value);
+    if (selected) {
+      info.innerHTML = `<strong>Країна:</strong> ${selected.name}<br>
+                        <strong>Статус:</strong> ${selected.status}<br>
+                        <strong>Населення:</strong> ${selected.population}<br>
+                        <strong>Валюта:</strong> ${selected.currency}`;
+    } else {
+      info.textContent = "Інформація про країну з'явиться тут.";
     }
-  </script>
-
+  });
+</script>
 </body>
 </html>
