@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Контакти</title>
   <link href="https://fonts.googleapis.com/css2?family=Monotype+Corsiva&display=swap" rel="stylesheet">
   <style>
@@ -84,6 +84,22 @@
       text-decoration: underline;
     }
 
+    .copy-btn {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #ffd700;
+      color: #1f1c2c;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .copy-btn:hover {
+      background-color: #e6c200;
+    }
+
     @media (max-width: 768px) {
       .content {
         padding: 10px;
@@ -116,10 +132,27 @@
 
   <div class="content">
     <div class="contacts">
+      <h1>Контакти</h1>
       <p>Телеграм: <a href="https://t.me/tor_emil" target="_blank">@tor_emil</a></p>
       <p>Instagram: <a href="https://www.instagram.com/emiltorosian?igsh=MXg1b3NxbGhodWYybA" target="_blank">@emiltorosian</a></p>
-      <p>Пошта: <a href="mailto:torosyanemil2310@gmail.com">torosyanemil2310@gmail.com</a></p>
+      <p>Пошта: 
+        <a href="mailto:torosyanemil2310@gmail.com">torosyanemil2310@gmail.com</a>
+        <br>
+        <button class="copy-btn" onclick="copyEmail()">Скопіювати пошту</button>
+      </p>
     </div>
   </div>
+
+  <script>
+    function copyEmail() {
+      const email = "torosyanemil2310@gmail.com";
+      navigator.clipboard.writeText(email).then(function() {
+        alert("Пошту скопійовано: " + email);
+      }, function(err) {
+        alert("Не вдалося скопіювати пошту");
+      });
+    }
+  </script>
 </body>
 </html>
+
